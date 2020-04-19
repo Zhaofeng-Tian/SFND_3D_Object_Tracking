@@ -10,6 +10,10 @@
 
 using namespace std;
 
+/* STUDENT INCLUDES START */
+#include <opencv2/core.hpp>
+
+/* STUDENT INCLUDES END   */
 
 // Create groups of Lidar points whose projection into the camera falls into the same bounding box
 void clusterLidarWithROI(std::vector<BoundingBox> &boundingBoxes, std::vector<LidarPoint> &lidarPoints, float shrinkFactor, cv::Mat &P_rect_xx, cv::Mat &R_rect_xx, cv::Mat &RT)
@@ -172,8 +176,8 @@ void matchBoundingBoxes(std::vector<cv::DMatch> &matches, std::map<int, int> &bb
         const auto& pt_curr = currFrame.keypoints[pair_match.trainIdx].pt;
 
         // Step 3: Loop through all the previouse and current bounding box numbers (Nested for loop)
-        for (size_t i = 0; i : prevFrame.boundingBoxes.size(); i++) {
-            for (size_t j = 0; i : currFrame.boundingBoxes.size(); j++) {
+        for (size_t i = 0; i < prevFrame.boundingBoxes.size(); i++) {
+            for (size_t j = 0; j < currFrame.boundingBoxes.size(); j++) {
                 // Step 4: If the previous keypoint in the ROI of previous bounding box
                 //         and the current keypoint in the ROI of current bounding box,
                 //         Increase the counter in the 2D table/map
@@ -187,14 +191,14 @@ void matchBoundingBoxes(std::vector<cv::DMatch> &matches, std::map<int, int> &bb
     // Using minMaxLoc here
     // https://docs.opencv.org/2.4/modules/core/doc/operations_on_arrays.html#minmaxloc
     // maxLoc – pointer to the returned maximum location (in 2D case);
-    int min = 0, max = 0;
-    Point minLoc, maxLoc;
+    double min = 0, max = 0;
+    cv::Point minLoc, maxLoc;
 
     // Step 5: Loop through all the counter number in the 2D table/map (for loop)
-    for (size_t i = 0; i < tbl_counter; i++) {
+    for (size_t i = 0; i < tbl_counter.rows; i++) {
         // Step 6: Find the maximum value index in each row
         // maxLoc contains coordinate of maximum value
-        minMaxLoc(tbl_counter(i), &min, &max, &minLoc, &maxLoc);
+        cv::minMaxLoc(tbl_counter.row(i), &min, &max, &minLoc, &maxLoc);
         
         // Step 7: If the maximum value is non-zero, place it into the bbBestMatches
         //         The maxLoc.x is the column index of the maximum value in each row
