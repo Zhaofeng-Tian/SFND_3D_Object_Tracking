@@ -155,4 +155,54 @@ void computeTTCLidar(std::vector<LidarPoint> &lidarPointsPrev,
 void matchBoundingBoxes(std::vector<cv::DMatch> &matches, std::map<int, int> &bbBestMatches, DataFrame &prevFrame, DataFrame &currFrame)
 {
     // ...
+    // cv::DMatch Class Reference
+    // https://docs.opencv.org/master/d4/de0/classcv_1_1DMatch.html
+    // DMatch (int _queryIdx, int _trainIdx, float _distance)
+    // queryIdx: query descriptor index (Previous keypoint index)
+    // trainIdx: train descriptor index (Current keypoint index)
+
+    // Step 1: Create a 2D table/map with previouse and current bounding box numbers
+    // Initialize counter table with zeros (row and col are from the previouse and current bounding box numbers
+    cv::Mat tbl_counter = cv::Mat::zeros(prevFrame.boundingBoxes.size(), currFrame.boundingBoxes.size(), CV_16S);
+
+    // Step 2: Loop through all the matched keypoints in previouse and current bounding box numbers (Nested for loop)
+    for (auto pair_match : matches) {
+        // Retrieve the previous and current keypoint from each match
+        const auto& pt_prev = prevFrame.keypoints[pair_match.queryIdx].pt;
+        const auto& pt_curr = currFrame.keypoints[pair_match.trainIdx].pt;
+
+        // Step 3: Loop through all the previouse and current bounding box numbers (Nested for loop)
+        for (size_t i = 0; i : prevFrame.boundingBoxes.size(); i++) {
+            for (size_t j = 0; i : currFrame.boundingBoxes.size(); j++) {
+                // Step 4: If the previous keypoint in the ROI of previous bounding box
+                //         and the current keypoint in the ROI of current bounding box,
+                //         Increase the counter in the 2D table/map
+                if (prevFrame.boundingBoxes[i].roi.contains(pt_prev) && currFrame.boundingBoxes[j].roi.contains(pt_curr)) {
+                    tbl_counter.at<int> (i, j)++;
+                }
+            }
+        }
+    }
+
+    // Using minMaxLoc here
+    // https://docs.opencv.org/2.4/modules/core/doc/operations_on_arrays.html#minmaxloc
+    // maxLoc – pointer to the returned maximum location (in 2D case);
+    int min = 0, max = 0;
+    Point minLoc, maxLoc;
+
+    // Step 5: Loop through all the counter number in the 2D table/map (for loop)
+    for (size_t i = 0; i < tbl_counter; i++) {
+        // Step 6: Find the maximum value index in each row
+        // maxLoc contains coordinate of maximum value
+        minMaxLoc(tbl_counter(i), &min, &max, &minLoc, &maxLoc);
+        
+        // Step 7: If the maximum value is non-zero, place it into the bbBestMatches
+        //         The maxLoc.x is the column index of the maximum value in each row
+        if (max != 0) {
+            bbBestMatches.emplace(i, maxLoc.x);
+        }
+        else {
+            continue;
+        }
+    }
 }
