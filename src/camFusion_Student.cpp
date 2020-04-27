@@ -142,12 +142,12 @@ void clusterKptMatchesWithROI(BoundingBox &boundingBox, std::vector<cv::KeyPoint
     float dist_mean_euclidean = 0.0;
     float size = 0.0;
 
-    for (auto pair_match : matches) {
+    for (auto pair_match : kptMatches) {
         // Retrieve the previous and current keypoint from each match
-        const auto& pt_prev = prevFrame.keypoints[pair_match.queryIdx].pt;
-        const auto& pt_curr = currFrame.keypoints[pair_match.trainIdx].pt;
+        const auto& pt_prev = kptsPrev[pair_match.queryIdx].pt;
+        const auto& pt_curr = kptsCurr[pair_match.trainIdx].pt;
 
-        if (boundingBoxes.roi.contains(pt_curr)) {
+        if (boundingBox.roi.contains(pt_curr)) {
             dist_mean_euclidean += cv::norm(pt_curr - pt_prev);
             size++;
         }
@@ -160,13 +160,13 @@ void clusterKptMatchesWithROI(BoundingBox &boundingBox, std::vector<cv::KeyPoint
     
     float factor_threshold = 1.2;
 
-    for (auto pair_match : matches) {
+    for (auto pair_match : kptMatches) {
         // Retrieve the previous and current keypoint from each match
-        const auto& pt_prev = prevFrame.keypoints[pair_match.queryIdx].pt;
-        const auto& pt_curr = currFrame.keypoints[pair_match.trainIdx].pt;
+        const auto& pt_prev = kptsPrev[pair_match.queryIdx].pt;
+        const auto& pt_curr = kptsCurr[pair_match.trainIdx].pt;
 
-        if (boundingBoxes.roi.contains(pt_curr) && (cv::norm(pt_curr - pt_prev) < dist_mean_euclidean * factor_threshold)) {
-            boundingBox.kptMatches.push_back(pt_curr);
+        if (boundingBox.roi.contains(pt_curr) && (cv::norm(pt_curr - pt_prev) < dist_mean_euclidean * factor_threshold)) {
+            boundingBox.kptMatches.push_back(pair_match);
         }
     }
 }
