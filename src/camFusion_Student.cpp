@@ -273,7 +273,7 @@ void matchBoundingBoxes(std::vector<cv::DMatch> &matches, std::map<int, int> &bb
 
     // Step 1: Create a 2D table/map with previouse and current bounding box numbers
     // Initialize counter table with zeros (row and col are from the previouse and current bounding box numbers
-    cv::Mat tbl_counter = cv::Mat::zeros(prevFrame.boundingBoxes.size(), currFrame.boundingBoxes.size(), CV_16S);
+    cv::Mat tbl_counter = cv::Mat::zeros(prevFrame.boundingBoxes.size(), currFrame.boundingBoxes.size(), CV_32S);
 
     // Step 2: Loop through all the matched keypoints in previouse and current bounding box numbers (Nested for loop)
     for (auto pair_match : matches) {
