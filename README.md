@@ -89,3 +89,31 @@ This method is implemented here [camFusion_Student.cpp (Line 176-232)](./src/cam
 
 ### 7. FP.6 Performance Evaluation 2  
 #### 7.1 Run several detector / descriptor combinations and look at the differences in TTC estimation. Find out which methods perform best and also include several examples where camera-based TTC estimation is way off. As with Lidar, describe your observations again and also look into potential reasons.  
+
+Below please find the TOP3 detector / descriptor combinations are recommened as the best choice for our purpose of detecting keypoints on vehicles from the mid-term project [`SFND-Term1-P2-2D-Feature-Tracking`](https://github.com/jinchaolu/SFND-Term1-P2-2D-Feature-Tracking).  
+We will evaluate the performance on each combination for comparison.  
+* **FAST + BRIEF**
+* **FAST + BRISK**
+* **FAST + ORB**
+
+Camera TTC estimation resulte are shown in the table below.  
+| Image No. | Lidar TTC Estiamtion | Camera TTC Estiamtion<br />FAST + BRIEF| Camera TTC Estiamtion<br />FAST + BRISK | Camera TTC Estiamtion<br />FAST + ORB |
+| :------: | :---: | :---: | :---: | :---: |
+| 1        |       |      |
+| 2        |       |      |
+| 3        |       |      |
+| 4        |       |      |
+| 5        |       |      |
+| 6        |       |      |
+| 7        |       |      |
+| 8        |       |      |
+| 9        |       |      |
+| 10       |       |      |
+| 11       |       |      |
+| 12       |       |      |
+| 13       |       |      |
+| 14       |       |      |
+| 15       |       |      |
+| 16       |       |      |
+| 17       |       |      |
+| 18       |       |      |
