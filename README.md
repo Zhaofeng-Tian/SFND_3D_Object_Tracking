@@ -1,9 +1,11 @@
-# SFND 3D Object Tracking
+# SFND-Term1-P3-3D-Object-Tracking
+Project 3 of Udacity Sensor Fusion Nanodegree  
+<img src="images/course_code_structure.png" width="779" height="414" />
 
 ## (TODO) Overview  
 Welcome to the final project of the camera course. By completing all the lessons, you now have a solid understanding of keypoint detectors, descriptors, and methods to match them between successive images. Also, you know how to detect objects in an image using the YOLO deep-learning framework. And finally, you know how to associate regions in a camera image with Lidar points in 3D space. Let's take a look at our program schematic to see what we already have accomplished and what's still missing.
 
-<img src="images/course_code_structure.png" width="779" height="414" />
+
 
 In this final project, you will implement the missing parts in the schematic. To do this, you will complete four major tasks: 
 1. First, you will develop a way to match 3D objects over time by using keypoint correspondences. 
@@ -67,18 +69,23 @@ Please (do your best to) stick to [Google's C++ style guide](https://google.gith
 ## (TODO) Project Rubric  
 ### 1. FP.0 Final Report  
 #### 1.1 Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf.  
+Done. You are reading it.  
 
 ### 2. FP.1 Match 3D Objects  
 #### 2.1 Implement the method "matchBoundingBoxes", which takes as input both the previous and the current data frames and provides as output the ids of the matched regions of interest (i.e. the boxID property). Matches must be the ones with the highest number of keypoint correspondences.  
+This method is implemented here [camFusion_Student.cpp (Line 265-318)](./src/camFusion_Student.cpp#L265-L318).  
 
 ### 3. FP.2 Compute Lidar-based TTC  
 #### 3.1 Compute the time-to-collision in second for all matched 3D objects using only Lidar measurements from the matched bounding boxes between current and previous frame.  
+This method is implemented here [camFusion_Student.cpp (Line 235-262)](./src/camFusion_Student.cpp#L235-L262).  
 
 ### 4. FP.3 Associate Keypoint Correspondences with Bounding Boxes  
 #### 4.1 Prepare the TTC computation based on camera measurements by associating keypoint correspondences to the bounding boxes which enclose them. All matches which satisfy this condition must be added to a vector in the respective bounding box.  
+This method is implemented here [camFusion_Student.cpp (Line 138-172)](./src/camFusion_Student.cpp#L138-L172).  
 
 ### 5. FP.4 Compute Camera-based TTC  
 #### 5.1 Compute the time-to-collision in second for all matched 3D objects using only keypoint correspondences from the matched bounding boxes between current and previous frame.  
+This method is implemented here [camFusion_Student.cpp (Line 176-232)](./src/camFusion_Student.cpp#L176-L232).  
 
 ### 6. FP.5 Performance Evaluation 1  
 #### 6.1 Find examples where the TTC estimate of the Lidar sensor does not seem plausible. Describe your observations and provide a sound argumentation why you think this happened.  
