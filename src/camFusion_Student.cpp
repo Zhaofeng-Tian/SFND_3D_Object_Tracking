@@ -237,15 +237,16 @@ void computeTTCLidar(std::vector<LidarPoint> &lidarPointsPrev,
 {
     // ...
     // auxiliary variables
-    double dT = 0.1;        // time between two measurements in seconds
+    double dT = 1.0 / frameRate;        // time between two measurements in seconds
     double laneWidth = 4.0; // assumed width of the ego lane
 
-    // find closest distance to Lidar points within ego lane
+    // find all Lidar points within ego lane    
+    vector<double> d_Prev, d_Curr;
     double minXPrev = 1e9, minXCurr = 1e9;
     for (auto it = lidarPointsPrev.begin(); it != lidarPointsPrev.end(); ++it)
     {
       if (abs(it->y) <= laneWidth/2.0) {
-        minXPrev = minXPrev > it->x ? it->x : minXPrev;
+        d_Prev.push_back(it->x);
       }
       
     }
@@ -253,12 +254,30 @@ void computeTTCLidar(std::vector<LidarPoint> &lidarPointsPrev,
     for (auto it = lidarPointsCurr.begin(); it != lidarPointsCurr.end(); ++it)
     {
       if (abs(it->y) <= laneWidth/2.0) {
-        minXCurr = minXCurr > it->x ? it->x : minXCurr;
+        d_Curr.push_back(it->x);
       }
     }
 
+    // Take subset from previous Lidar points
+    // 1/3 to 2/3 subset from the vector
+    int idx_Prev_Start = d_Prev.size() / 3;
+    int idx_Prev_End   = d_Prev.size() / 3 * 2;
+    sort(d_Prev.begin(), d_Prev.end());
+
+    // Calculate the average distance
+    double d_avg_Prev = accumulate(d_Prev.begin() + idx_Prev_Start, d_Prev.begin() + idx_Prev_End, 0) / (idx_Prev_End - idx_Prev_Start);
+
+    // Take subset from current Lidar points
+    // 1/3 to 2/3 subset from the vector
+    int idx_Curr_Start = d_Curr.size() / 3;
+    int idx_Curr_End   = d_Curr.size() / 3 * 2;
+    sort(d_Curr.begin(), d_Curr.end());
+
+    // Calculate the average distance
+    double d_avg_Curr = accumulate(d_Curr.begin() + idx_Curr_Start, d_Curr.begin() + idx_Curr_End, 0) / (idx_Curr_End - idx_Curr_Start);
+
     // compute TTC from both measurements
-    TTC = minXCurr * dT / (minXPrev - minXCurr);
+    TTC = d_avg_Curr * dT / (d_avg_Prev - d_avg_Curr);
 }
 
 
