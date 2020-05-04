@@ -28,6 +28,8 @@ In this project, you will fill some methods in a C++ script to measure the dista
   * Windows: recommend using [MinGW](http://www.mingw.org/)
 
 ## (TODO) Project Description  
+```
+.SFND-Term1-P2-2D-Feature-Tracking                  # 2D Feature Tracking Project
 ├── CMakeLists.txt
 ├── dat
 │   └── yolo
@@ -211,6 +213,13 @@ In this project, you will fill some methods in a C++ script to measure the dista
     ├── matching2D_Student.cpp
     ├── objectDetection2D.cpp
     └── objectDetection2D.hpp
+```
+
+- [CMakeLists.txt](/src/CMakeLists.txt): File to link the C++ code to libraries.  
+- [MidTermProject_Camera_Student.cpp](/src/MidTermProject_Camera_Student.cpp): C++ script, main function to load and analyze images  
+- [matching2D_Student.cpp](/src/matching2D_Student.cpp): C++ script, helper function, create detector and descriptor, and compute the matched keypoint with given threshold and ratio  
+- [matching2D.h](/src/matching2D.hpp): Header file, define libraries and functions for matching2D_Student.cpp  
+- [dataStructures.h](/src/quiz/cluster/kdtree.h): Header file, define libraries and functions for data structure  
 
 ## Run the project  
 * Clone this repository  
@@ -281,23 +290,24 @@ We will evaluate the performance on each combination for comparison.
 * **FAST + ORB**
 
 Camera TTC estimation resulte are shown in the table below.  
-| Image No. | Lidar TTC Estiamtion | Camera TTC Estiamtion<br />FAST + BRIEF| Camera TTC Estiamtion<br />FAST + BRISK | Camera TTC Estiamtion<br />FAST + ORB |
-| :------: | :---: | :---: | :---: | :---: |
-| 1        |       |      |
-| 2        |       |      |
-| 3        |       |      |
-| 4        |       |      |
-| 5        |       |      |
-| 6        |       |      |
-| 7        |       |      |
-| 8        |       |      |
-| 9        |       |      |
-| 10       |       |      |
-| 11       |       |      |
-| 12       |       |      |
-| 13       |       |      |
-| 14       |       |      |
-| 15       |       |      |
-| 16       |       |      |
-| 17       |       |      |
-| 18       |       |      |
+| Image No. | xmin (m) | Lidar TTC Estiamtion (s) | Camera TTC Estiamtion (s)<br />FAST + BRIEF| Camera TTC Estiamtion (s)<br />FAST + BRISK | Camera TTC Estiamtion (s)<br />FAST + ORB |
+| :------: | :---: | :---: | :---: | :---: | :---: |
+| 1        | 7.97      | N/A       | N/A   |
+| 2        | 7.91      | 12.97     | 11.79 |
+| 3        | 7.85      | 12.26     | 11.74 |
+| 4        | 7.79      | 13.92     | 13.77 |
+| 5        | 7.68      | 7.12      | 12.83 |
+| 6        | 7.64      | 16.25     | 13.44 |
+| 7        | 7.58      | 12.42     | 13.74 |
+| 8        | 7.55      | 34.34     | 13.27 |
+| 9        | 7.47      | 9.34      | 12.38 |
+| 10       | 7.43      | 18.13     | 12.25 |
+| 11       | 7.39      | 18.03     | 12.58 |
+| 12       | 7.20      | 3.83      | 11.75 |
+| 13       | 7.27      | -10.85    | 11.36 |
+| 14       | 7.19      | 9.22      | 12.37 |
+| 15       | 7.13      | 10.97     | 10.00 |
+| 16       | 7.04      | 8.09      | 11.53 |
+| 17       | 6.83      | 3.18      | 10.56 |
+| 18       | 6.90      | -9.99     | 10.38 |
+| 19       | 6.81      | 8.31      | 11.08 |
