@@ -264,8 +264,14 @@ void computeTTCLidar(std::vector<LidarPoint> &lidarPointsPrev,
     int idx_Prev_End   = d_Prev.size() / 3 * 2;
     sort(d_Prev.begin(), d_Prev.end());
 
+    // cout << "The size of d_Prev is " << d_Prev.size() << endl;
+    // cout << "The start index of d_Prev is " << idx_Prev_Start << endl;
+    // cout << "The end index of d_Prev is " << idx_Prev_End << endl;
+
     // Calculate the average distance
-    double d_avg_Prev = accumulate(d_Prev.begin() + idx_Prev_Start, d_Prev.begin() + idx_Prev_End, 0) / (idx_Prev_End - idx_Prev_Start);
+    double d_avg_Prev = accumulate(d_Prev.begin() + idx_Prev_Start, d_Prev.begin() + idx_Prev_End, 0.0) / (idx_Prev_End - idx_Prev_Start);
+
+    // cout << "The average of d_Prev is " << d_avg_Prev << endl;
 
     // Take subset from current Lidar points
     // 1/3 to 2/3 subset from the vector
@@ -274,7 +280,7 @@ void computeTTCLidar(std::vector<LidarPoint> &lidarPointsPrev,
     sort(d_Curr.begin(), d_Curr.end());
 
     // Calculate the average distance
-    double d_avg_Curr = accumulate(d_Curr.begin() + idx_Curr_Start, d_Curr.begin() + idx_Curr_End, 0) / (idx_Curr_End - idx_Curr_Start);
+    double d_avg_Curr = accumulate(d_Curr.begin() + idx_Curr_Start, d_Curr.begin() + idx_Curr_End, 0.0) / (idx_Curr_End - idx_Curr_Start);
 
     // compute TTC from both measurements
     TTC = d_avg_Curr * dT / (d_avg_Prev - d_avg_Curr);
