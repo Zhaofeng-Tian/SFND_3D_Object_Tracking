@@ -27,19 +27,19 @@ In this project, you will fill some methods in a C++ script to measure the dista
   * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)
   * Windows: recommend using [MinGW](http://www.mingw.org/)
 
-## (TODO) Project Description  
+## Project Description  
 ```
-.SFND-Term1-P3-3D-Object-Tracking                  # 3D Object Tracking Project
-├── CMakeLists.txt
-├── dat
+.SFND-Term1-P3-3D-Object-Tracking                               # 3D Object Tracking Project
+├── CMakeLists.txt                                              # compiler instructions
+├── dat                                                         # YOLO library and a set of pre-trained objects from the COCO database
 │   └── yolo
-│       ├── coco.names
+│       ├── coco.names                                          # A set of 80 classes
 │       ├── yolov3.cfg
 │       ├── yolov3-tiny.cfg
-│       └── yolov3-tiny.weights
-├── images
+│       └── yolov3-tiny.weights                                 # Pre-trained weights
+├── images                                                      # Image files
 │   ├── course_code_structure.png
-│   └── KITTI
+│   └── KITTI                                                   # KITTI database
 │       └── 2011_09_26
 │           ├── image_02
 │           │   └── data
@@ -121,7 +121,7 @@ In this project, you will fill some methods in a C++ script to measure the dista
 │           │       ├── 0000000075.png
 │           │       ├── 0000000076.png
 │           │       └── 0000000077.png
-│           └── velodyne_points
+│           └── velodyne_points                                 # Velodyne Lidar sensor data example
 │               └── data
 │                   ├── 0000000000.bin
 │                   ├── 0000000001.bin
@@ -201,9 +201,9 @@ In this project, you will fill some methods in a C++ script to measure the dista
 │                   ├── 0000000075.bin
 │                   ├── 0000000076.bin
 │                   └── 0000000077.bin
-├── README.md
-├── results
-│   ├── FAST+BRIEF
+├── README.md                                                   # Readme file
+├── results                                                     # Result data for analysis
+│   ├── FAST+BRIEF                                              # FAST+BRIEF result images
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_002.png
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_003.png
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_004.png
@@ -223,7 +223,7 @@ In this project, you will fill some methods in a C++ script to measure the dista
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_018.png
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_019.png
 │   │   └── No Final Results - TTC_screenshot_04.05.2020_001
-│   ├── FAST+BRISK
+│   ├── FAST+BRISK                                              # FAST+BRISK result images
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_002.png
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_003.png
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_004.png
@@ -243,7 +243,7 @@ In this project, you will fill some methods in a C++ script to measure the dista
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_018.png
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_019.png
 │   │   └── No Final Results - TTC_screenshot_04.05.2020_001
-│   ├── FAST+ORB
+│   ├── FAST+ORB                                                # FAST+ORB result images
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_002.png
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_003.png
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_004.png
@@ -263,7 +263,7 @@ In this project, you will fill some methods in a C++ script to measure the dista
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_018.png
 │   │   ├── Final_Results_-_TTC_screenshot_04.05.2020_019.png
 │   │   └── No Final Results - TTC_screenshot_04.05.2020_001
-│   ├── Lidar
+│   ├── Lidar                                                   # Lidar result images
 │   │   ├── 3D_Objects_screenshot_04.05.2020_001.png
 │   │   ├── 3D_Objects_screenshot_04.05.2020_002.png
 │   │   ├── 3D_Objects_screenshot_04.05.2020_003.png
@@ -283,27 +283,33 @@ In this project, you will fill some methods in a C++ script to measure the dista
 │   │   ├── 3D_Objects_screenshot_04.05.2020_017.png
 │   │   ├── 3D_Objects_screenshot_04.05.2020_018.png
 │   │   └── 3D_Objects_screenshot_04.05.2020_019.png
-│   ├── Object classification_screenshot_04.05.2020.png
-│   └── Summary_Chart.png
+│   ├── Object classification_screenshot_04.05.2020.png         # Object classification result images
+│   └── Summary_Chart.png                                       # Summary chart for visualization comparison
 └── src
     ├── camFusion.hpp
-    ├── camFusion_Student.cpp
-    ├── dataStructures.h
-    ├── FinalProject_Camera.cpp
-    ├── lidarData.cpp
+    ├── camFusion_Student.cpp                                   # Define functions/methods to support main function
+    ├── dataStructures.h                                        # Data structure header file
+    ├── FinalProject_Camera.cpp                                 # Main function to load and analyze Lidar data points and images
+    ├── lidarData.cpp                                           # Define functions/methods to support other functions
     ├── lidarData.hpp
-    ├── matching2D.hpp
-    ├── matching2D_Student.cpp
-    ├── objectDetection2D.cpp
+    ├── matching2D.hpp                                          # matching2D header file
+    ├── matching2D_Student.cpp                                  # Create detector and descriptor, and compute matched keypoints
+    ├── objectDetection2D.cpp                                   # Objection detection with YOLO computer vision concept
     └── objectDetection2D.hpp
 
 ```
 
 - [CMakeLists.txt](/src/CMakeLists.txt): File to link the C++ code to libraries.  
-- [MidTermProject_Camera_Student.cpp](/src/MidTermProject_Camera_Student.cpp): C++ script, main function to load and analyze images  
-- [matching2D_Student.cpp](/src/matching2D_Student.cpp): C++ script, helper function, create detector and descriptor, and compute the matched keypoint with given threshold and ratio  
-- [matching2D.h](/src/matching2D.hpp): Header file, define libraries and functions for matching2D_Student.cpp  
+- [camFusion_Student.cpp](/src/matching2D_Student.cpp): C++ script, helper function, show 3D objects, match bounding boxes between images, cluster Lidar points into region of interest in the image, cluster matched keypoints into region of interest in the image, calculate the Lidar TTC estimation and calculate the camera TTC estimation  
+- [camFusion.hpp](/src/camFusion.hpp): Header file, define libraries and functions for camFusion_Student.cpp  
 - [dataStructures.h](/src/quiz/cluster/kdtree.h): Header file, define libraries and functions for data structure  
+- [FinalProject_Camera.cpp](/src/FinalProject_Camera.cpp): C++ script, main function to load and analyze Lidar data points and images  
+- [lidarData.cpp](/src/lidarData.cpp): C++ script, helper function, load Lidar data points from file, crop Lidar data points based on given range, show Lidar data points from top-view and show Lidar data points overlay the image  
+- [lidarData.hpp](/src/lidarData.hpp): Header file, define libraries and functions for lidarData.cpp  
+- [matching2D_Student.cpp](/src/matching2D_Student.cpp): C++ script, helper function, create detector and descriptor, and compute the matched keypoint with given threshold and ratio  
+- [matching2D.hpp](/src/matching2D.hpp): Header file, define libraries and functions for matching2D_Student.cpp  
+- [objectDetection2D.cpp](/src/objectDetection2D.cpp): C++ script, helper function, detects objects in an image using the YOLO library and a set of pre-trained objects from the COCO database, a set of 80 classes is listed in "coco.names" and pre-trained weights are stored in "yolov3.weights"  
+- [objectDetection2D.hpp](/src/objectDetection2D.hpp): Header file, define libraries and functions for objectDetection2D.cpp  
 
 ## Run the project  
 * Clone this repository  
