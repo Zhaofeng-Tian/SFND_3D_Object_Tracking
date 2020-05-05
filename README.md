@@ -256,18 +256,18 @@ wget https://pjreddie.com/media/files/yolov3.weights
 ## Code Style  
 Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).  
 
-## (TODO) Project Rubric  
+## Project Rubric  
 ### 1. FP.0 Final Report  
 #### 1.1 Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf.  
 Done. You are reading it.  
 
 ### 2. FP.1 Match 3D Objects  
 #### 2.1 Implement the method "matchBoundingBoxes", which takes as input both the previous and the current data frames and provides as output the ids of the matched regions of interest (i.e. the boxID property). Matches must be the ones with the highest number of keypoint correspondences.  
-This method is implemented here [camFusion_Student.cpp (Line 265-318)](./src/camFusion_Student.cpp#L265-L318).  
+This method is implemented here [camFusion_Student.cpp (Line 290-343)](./src/camFusion_Student.cpp#L290-L343).  
 
 ### 3. FP.2 Compute Lidar-based TTC  
 #### 3.1 Compute the time-to-collision in second for all matched 3D objects using only Lidar measurements from the matched bounding boxes between current and previous frame.  
-This method is implemented here [camFusion_Student.cpp (Line 235-262)](./src/camFusion_Student.cpp#L235-L262).  
+This method is implemented here [camFusion_Student.cpp (Line 235-287)](./src/camFusion_Student.cpp#L235-L287).  
 
 ### 4. FP.3 Associate Keypoint Correspondences with Bounding Boxes  
 #### 4.1 Prepare the TTC computation based on camera measurements by associating keypoint correspondences to the bounding boxes which enclose them. All matches which satisfy this condition must be added to a vector in the respective bounding box.  
@@ -279,6 +279,26 @@ This method is implemented here [camFusion_Student.cpp (Line 176-232)](./src/cam
 
 ### 6. FP.5 Performance Evaluation 1  
 #### 6.1 Find examples where the TTC estimate of the Lidar sensor does not seem plausible. Describe your observations and provide a sound argumentation why you think this happened.  
+
+Below please find the [`Summary Chart`](./results/Summary_Chart.png) for overview  
+![Summary Chart](./results/Summary_Chart.png "Summary_Chart.png")  
+
+The Lidar TTC estimation on Image No. 12 doesn't seem right as the trend line is going down.  
+We will look into the Lidar data point distribution from top-view to analyze between Image No. 11 and 13.  
+
+`Lidar data point top-view 11`  
+The data point distribution is well concentrated. Data points are almost lined up.  
+![Lidar data point top-view 11](./results/Lidar/3D_Objects_screenshot_04.05.2020_011.png "Lidar data point top-view 11")  
+
+`Lidar data point top-view 12`  
+The data point distribution is a little bit spread out. Data points are not lined up well as previous one.  
+![Lidar data point top-view 12](./results/Lidar/3D_Objects_screenshot_04.05.2020_012.png "Lidar data point top-view 12")  
+
+`Lidar data point top-view 13`  
+The data point distribution is well concentrated. Data points are almost lined up.  
+![Lidar data point top-view 13](./results/Lidar/3D_Objects_screenshot_04.05.2020_013.png "Lidar data point top-view 13")  
+
+From above observation, the data distribution spread out in Image No. 12 contribute to the jump on the Lidar TTC estimation. To improve the estimation, we can apply a low-pass filter with appropriate alpha to smoothe the estimation.  
 
 ### 7. FP.6 Performance Evaluation 2  
 #### 7.1 Run several detector / descriptor combinations and look at the differences in TTC estimation. Find out which methods perform best and also include several examples where camera-based TTC estimation is way off. As with Lidar, describe your observations again and also look into potential reasons.  
@@ -311,3 +331,18 @@ Camera TTC estimation resulte are shown in the table below.
 | 17    | 6.83  | 9.47    | 10.56 | 10.82 | 9.95  |
 | 18    | 6.90  | 10.23   | 10.38 | 10.19 | 9.38  |
 | 19    | 6.81  | 8.22    | 11.08 | 12.38 | 11.56 |
+
+In summary, the combination **FAST + BRIEF** has the most smoothy and stable TTC estimation and is highly recommended to use for future application. The combination **FAST + BRISK** has the worst TTC estimation according to the big distribution. The combination **FAST + ORB** has the median estimation among all of three combinations.  
+
+We will take a look into the **FAST + BRISK** between Image No. 9 and 11.  
+
+`FAST + BRISK 9`  
+![FAST + BRISK 9](./results/FAST+BRISK/Final_Results_-_TTC_screenshot_04.05.2020_009.png "FAST + BRISK 9")  
+
+`FAST + BRISK 10`  
+![FAST + BRISK 10](./results/FAST+BRISK/Final_Results_-_TTC_screenshot_04.05.2020_010.png "FAST + BRISK 10")  
+
+`FAST + BRISK 11`  
+![FAST + BRISK 11](./results/FAST+BRISK/Final_Results_-_TTC_screenshot_04.05.2020_011.png "FAST + BRISK 11")  
+
+Matched points in the ground or in other cars might occurred in the Image No.10 which will create inconsistent and unstable distance measurement on the preceeding car. To resolve this, we can switch to other detector and descriptor combination for better result like **FAST + BRIEF**.  
