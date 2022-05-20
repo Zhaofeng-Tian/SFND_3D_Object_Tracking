@@ -34,9 +34,11 @@ Compute the time-to-collision in second for all matched 3D objects using only ke
 
 Find examples where the TTC estimate of the Lidar sensor does not seem plausible. Describe your observations and provide a sound argumentation why you think this happened.
 
-Some examples with wrong TTC estimate of the Lidar sensor:
-
-
+Wrong estimations:
+ <img src="./images/a1_02.png" width = "100%" height = "100%" alt="wrong1" align=center />
+ <img src="./images/a1_01.png" width = "100%" height = "100%" alt="wrong2" align=center />
+ 
+Some wrong estimations caused by minXCurr > minXPrev. Right lane points need to be removed.
 
 #### 6. Performance Evaluation 2
 
