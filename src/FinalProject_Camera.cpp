@@ -1,4 +1,6 @@
 
+  
+
 /* INCLUDES FOR THIS PROJECT */
 #include <iostream>
 #include <fstream>
@@ -73,6 +75,7 @@ int main(int argc, const char *argv[])
     int dataBufferSize = 2;       // no. of images which are held in memory (ring buffer) at the same time
     vector<DataFrame> dataBuffer; // list of data frames which are held in memory at the same time
     bool bVis = false;            // visualize results
+    bool perf = false;             // log the results
 
     /* MAIN LOOP OVER ALL IMAGES */
 
@@ -129,7 +132,7 @@ int main(int argc, const char *argv[])
         clusterLidarWithROI((dataBuffer.end()-1)->boundingBoxes, (dataBuffer.end() - 1)->lidarPoints, shrinkFactor, P_rect_00, R_rect_00, RT);
 
         // Visualize 3D objects
-        bVis = true;
+        bVis = false;
         if(bVis)
         {
             show3DObjects((dataBuffer.end()-1)->boundingBoxes, cv::Size(4.0, 20.0), cv::Size(2000, 2000), true);
@@ -140,7 +143,7 @@ int main(int argc, const char *argv[])
         
         
         // REMOVE THIS LINE BEFORE PROCEEDING WITH THE FINAL PROJECT
-        continue; // skips directly to the next image without processing what comes beneath
+        // continue; // skips directly to the next image without processing what comes beneath
 
         /* DETECT IMAGE KEYPOINTS */
 
@@ -150,16 +153,41 @@ int main(int argc, const char *argv[])
 
         // extract 2D keypoints from current image
         vector<cv::KeyPoint> keypoints; // create empty feature list for current image
-        string detectorType = "SHITOMASI";
+        
+        // string detectorType = "SHITOMASI";
+        // string detectorType = "HARRIS";
+        // string detectorType = "FAST";
+        // string detectorType = "BRISK";
+        // string detectorType = "ORB";
+        string detectorType = "AKAZE";
+        // string detectorType = "SIFT";
 
+        // Shi-Tomasi
         if (detectorType.compare("SHITOMASI") == 0)
         {
             detKeypointsShiTomasi(keypoints, imgGray, false);
         }
+        // Harris
+        else if (detectorType.compare("HARRIS") == 0)
+        {
+            detKeypointsHarris(keypoints, imgGray, false);
+        }
+        // Modern detector types, including FAST, BRISK, ORB, AKAZE, and SIFT
+        else if (detectorType.compare("FAST")  == 0 ||
+                 detectorType.compare("BRISK") == 0 ||
+                 detectorType.compare("ORB")   == 0 ||
+                 detectorType.compare("AKAZE") == 0 ||
+                 detectorType.compare("SIFT")  == 0)
+        {
+            detKeypointsModern(keypoints, imgGray, detectorType, false);
+        }
+        // Specified detectorType is unsupported
         else
         {
-            //...
+            throw invalid_argument(detectorType + " is not a valid detectorType");
         }
+
+        if (perf && dataBuffer.size() > 1) cout << detectorType << ",";
 
         // optional : limit number of keypoints (helpful for debugging and learning)
         bool bLimitKpts = false;
@@ -184,7 +212,14 @@ int main(int argc, const char *argv[])
         /* EXTRACT KEYPOINT DESCRIPTORS */
 
         cv::Mat descriptors;
-        string descriptorType = "BRISK"; // BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
+        
+        // string descriptorType = "BRISK";
+        // string descriptorType = "BRIEF";
+        // string descriptorType = "ORB";  // Fails with SIFT detector
+        // string descriptorType = "FREAK";
+        string descriptorType = "AKAZE";  // Fails with all non-AKAZE detectors
+        // string descriptorType = "SIFT";
+
         descKeypoints((dataBuffer.end() - 1)->keypoints, (dataBuffer.end() - 1)->cameraImg, descriptors, descriptorType);
 
         // push descriptors for current frame to end of data buffer
@@ -199,16 +234,37 @@ int main(int argc, const char *argv[])
             /* MATCH KEYPOINT DESCRIPTORS */
 
             vector<cv::DMatch> matches;
-            string matcherType = "MAT_BF";        // MAT_BF, MAT_FLANN
-            string descriptorType = "DES_BINARY"; // DES_BINARY, DES_HOG
-            string selectorType = "SEL_NN";       // SEL_NN, SEL_KNN
+
+            /* Select brute force (BF) or Fast Library for Approximate Nearest Neighbors (FLANN) */
+            string matcherType = "MAT_BF";
+            // string matcherType = "MAT_FLANN";
+            
+            /* For descriptor type, select binary (BINARY) or histogram of gradients (HOG) */
+            /* BINARY descriptors include: BRISK, BRIEF, ORB, FREAK, and (A)KAZE. */
+            /* HOG descriptors include: SIFT (and SURF and GLOH, all patented). */
+            string descriptorCategory {};
+            if (0 == descriptorType.compare("SIFT")) {
+                descriptorCategory = "DES_HOG";
+            }
+            else {
+                descriptorCategory = "DES_BINARY";
+            }
+
+            /* For selector type, choose nearest neighbors (NN) or k nearest neighbors (KNN) */
+            // string selectorType = "SEL_NN";
+            string selectorType = "SEL_KNN";
 
             matchDescriptors((dataBuffer.end() - 2)->keypoints, (dataBuffer.end() - 1)->keypoints,
                              (dataBuffer.end() - 2)->descriptors, (dataBuffer.end() - 1)->descriptors,
-                             matches, descriptorType, matcherType, selectorType);
+                             matches, descriptorCategory, matcherType, selectorType);
 
             // store matches in current data frame
             (dataBuffer.end() - 1)->kptMatches = matches;
+
+            if (perf) {
+                cout << descriptorType << ",";
+                cout << imgIndex << ",";
+            }
 
             cout << "#7 : MATCH KEYPOINT DESCRIPTORS done" << endl;
 
@@ -255,22 +311,30 @@ int main(int argc, const char *argv[])
                 {
                     //// STUDENT ASSIGNMENT
                     //// TASK FP.2 -> compute time-to-collision based on Lidar data (implement -> computeTTCLidar)
-                    double ttcLidar; 
+                    double ttcLidar {0.0}; 
                     computeTTCLidar(prevBB->lidarPoints, currBB->lidarPoints, sensorFrameRate, ttcLidar);
                     //// EOF STUDENT ASSIGNMENT
 
                     //// STUDENT ASSIGNMENT
                     //// TASK FP.3 -> assign enclosed keypoint matches to bounding box (implement -> clusterKptMatchesWithROI)
                     //// TASK FP.4 -> compute time-to-collision based on camera (implement -> computeTTCCamera)
-                    double ttcCamera;
+                    double ttcCamera {0.0};
                     clusterKptMatchesWithROI(*currBB, (dataBuffer.end() - 2)->keypoints, (dataBuffer.end() - 1)->keypoints, (dataBuffer.end() - 1)->kptMatches);                    
                     computeTTCCamera((dataBuffer.end() - 2)->keypoints, (dataBuffer.end() - 1)->keypoints, currBB->kptMatches, sensorFrameRate, ttcCamera);
+
+                    if (perf) {
+                        cout << ttcLidar << ",";
+                        cout << ttcCamera << ",";
+                        cout << ttcCamera - ttcLidar << ",";
+                        cout << endl;
+                    }
                     //// EOF STUDENT ASSIGNMENT
 
                     bVis = true;
                     if (bVis)
                     {
                         cv::Mat visImg = (dataBuffer.end() - 1)->cameraImg.clone();
+                        // showLidarTopview(currBB->lidarPoints, cv::Size(4.0, 20.0), cv::Size(2000, 2000), true);
                         showLidarImgOverlay(visImg, currBB->lidarPoints, P_rect_00, R_rect_00, RT, &visImg);
                         cv::rectangle(visImg, cv::Point(currBB->roi.x, currBB->roi.y), cv::Point(currBB->roi.x + currBB->roi.width, currBB->roi.y + currBB->roi.height), cv::Scalar(0, 255, 0), 2);
                         
