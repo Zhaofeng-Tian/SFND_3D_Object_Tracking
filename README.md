@@ -43,11 +43,14 @@ Some examples with wrong TTC estimate of the Lidar sensor:
 Run several detector / descriptor combinations and look at the differences in TTC estimation. Find out which methods perform best and also include several examples where camera-based TTC estimation is way off. As with Lidar, describe your observations again and also look into potential reasons.
 
 
-| Detector | Average Time|
+| Detector-Descriptor Type | Average Time|
 | :--------------: | :---:  |
 |    SHITOMASI/BRIEF |  12.04749  |
 |   SHITOMASI/BRISK   |  12.05098 |
 |SHITOMASI/ORB       |12.12967|
+
+
+
 The TOP3 detector / descriptor combinations as the best choice for our purpose of detecting keypoints on vehicles are:
 SHITOMASI/BRIEF         
 SHITOMASI/BRISK            
