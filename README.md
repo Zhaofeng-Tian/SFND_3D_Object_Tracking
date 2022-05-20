@@ -36,7 +36,7 @@ Find examples where the TTC estimate of the Lidar sensor does not seem plausible
 
 Wrong estimations:
  <img src="./images/a1_02.png" width = "100%" height = "100%" alt="wrong1" align=center />
- <img src="./images/a1_01.png" width = "100%" height = "100%" alt="wrong2" align=center />
+ <img src="./images/a1_0.1.png" width = "100%" height = "100%" alt="wrong2" align=center />
  
 Some wrong estimations caused by minXCurr > minXPrev. Right lane points need to be removed.
 
