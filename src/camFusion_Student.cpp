@@ -138,9 +138,13 @@ void show3DObjects(std::vector<BoundingBox> &boundingBoxes, cv::Size worldSize, 
 // associate a given bounding box with the keypoints it contains
 void clusterKptMatchesWithROI(BoundingBox &boundingBox, std::vector<cv::KeyPoint> &kptsPrev, std::vector<cv::KeyPoint> &kptsCurr, std::vector<cv::DMatch> &kptMatches)
 {
-    for (cv::DMatch match : kptMatches) 
+    if (kptMatches.size() == 0)
     {
-        if (boundingBox.roi.contains(kptsCurr[match.trainIdx].pt)) boundingBox.kptMatches.push_back(match);
+        std::cout << " errors happened, kptMatches is empty" << endl;
+    }
+    for (cv::DMatch it : kptMatches) 
+    {
+        if (boundingBox.roi.contains(kptsCurr[it.trainIdx].pt)) boundingBox.kptMatches.push_back(it);
     }
 }
 
@@ -251,58 +255,64 @@ void matchBoundingBoxes(std::vector<cv::DMatch> &matches, std::map<int, int> &bb
     cv::KeyPoint currKp;        
     int prevBoxID = -1;
     int currBoxID = -1;
-    vector<int> prevBoxIDs;
-    vector<int> currBoxIDs;
+    vector<int> prevIDs;
+    vector<int> currIDs;
     int best_num= 0;
     int bestID = -1;
     int counter[prevFrame.boundingBoxes.size()][currFrame.boundingBoxes.size()];
 
-
-    for (auto it = matches.begin(); it!= matches.end(); ++ it) 
+    if (prevFrame.boundingBoxes.size() == 0 || currFrame.boundingBoxes.size() == 0)
     {
-        prevKp = prevFrame.keypoints[(*it).queryIdx];
-        currKp = currFrame.keypoints[(*it).trainIdx];
-        prevBoxIDs.clear();
-        currBoxIDs.clear();
+        std::cout << " boudingBoxes vector is empty" << endl;
+    }
+
+    for (auto it1 = matches.begin(); it1!= matches.end(); ++ it1) 
+    {
+        
+        prevIDs.clear();
+        currIDs.clear();
+        prevKp = prevFrame.keypoints[it1->queryIdx];
+        currKp = currFrame.keypoints[it1->trainIdx];
+
 
 
         for (auto it2 = prevFrame.boundingBoxes.begin(); it2!= prevFrame.boundingBoxes.end(); ++it2) {
-            if ((*it2).roi.contains(prevKp.pt)) 
+            if (it2->roi.contains(prevKp.pt)) 
             { 
-                prevBoxID = (*it2).boxID;
-                prevBoxIDs.push_back(prevBoxID);
+                prevBoxID = it2->boxID;
+                prevIDs.push_back(prevBoxID);
             }
         }
 
 
         for (auto it3 = currFrame.boundingBoxes.begin(); it3!= currFrame.boundingBoxes.end(); ++it3) {
-            if ((*it3).roi.contains(currKp.pt)) 
+            if (it3->roi.contains(currKp.pt)) 
             {
-                currBoxID = (*it3).boxID;
-                currBoxIDs.push_back(currBoxID);
+                currBoxID = it3->boxID;
+                currIDs.push_back(currBoxID);
             }
         }
 
-        for(auto prev:prevBoxIDs)
+        for(auto p:prevIDs)
         {
-            for(auto curr:currBoxIDs)
-                counter[prev][curr]++;
+            for(auto c:currIDs)
+                counter[p][c]++;
         }
     }
 
-    // find the best boxes using counter numbers.
+ 
 
-    for (int prev=0; prev<prevFrame.boundingBoxes.size(); prev++)
-    {
+    for (int p=0; p<prevFrame.boundingBoxes.size(); p++)
+    {   // find the best boxes using counter numbers.
         best_num = 0;
-        for(int curr=0; curr<currFrame.boundingBoxes.size(); curr++)
+        for(int c=0; c<currFrame.boundingBoxes.size(); c++)
         {
-            if (counter[prev][curr] > best_num)
+            if (counter[p][c] > best_num)
             {
-                best_num = counter[prev][curr];
-                bestID = curr;
+                best_num = counter[p][c];
+                bestID = c;
             }
         }
-        bbBestMatches[prev] = bestID;
+        bbBestMatches[p] = bestID;
     }
 }
